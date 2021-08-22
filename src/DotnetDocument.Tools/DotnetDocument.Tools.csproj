@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
+        <Version>0.2.0</Version>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>dotnet-document</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>

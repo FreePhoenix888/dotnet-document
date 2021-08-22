@@ -22,20 +22,28 @@ namespace DotnetDocument.Syntax
             .WithTrailingTrivia(SyntaxFactory.TriviaList(indentationTrivia, SyntaxFactory
                 .DocumentationCommentExterior("/// ")));
 
+        public static XmlNodeSyntax[] Para(XmlTextSyntax newLineXmlNode, params XmlNodeSyntax[] content) =>
+            new XmlNodeSyntax[]
+            {
+                newLineXmlNode,
+                SyntaxFactory.XmlParaElement(content),
+                newLineXmlNode,
+                SyntaxFactory.XmlParaElement(),
+                newLineXmlNode
+            };
+
         /// <summary>
         /// Summaries the summary lines
         /// </summary>
         /// <param name="summaryLines">The summary lines</param>
-        /// <param name="xmlIndentedNewLine">The xml indented new line</param>
+        /// <param name="newLineXmlNode">The xml indented new line</param>
         /// <param name="keepSameLine">The keep same line</param>
         /// <returns>The xml element syntax</returns>
-        public static XmlElementSyntax Summary(IEnumerable<string> summaryLines, SyntaxToken xmlIndentedNewLine,
+        public static XmlElementSyntax Summary(IEnumerable<string> summaryLines, XmlTextSyntax newLineXmlNode,
             bool keepSameLine)
         {
             var xmlSummaryLines = new List<XmlNodeSyntax>();
-
-            xmlSummaryLines.Add(SyntaxFactory
-                .XmlText(SyntaxFactory.TokenList(xmlIndentedNewLine)));
+            xmlSummaryLines.Add(newLineXmlNode);
 
             foreach (var summaryLine in summaryLines)
             {
@@ -68,12 +76,11 @@ namespace DotnetDocument.Syntax
                         .XmlText(SyntaxFactory.TokenList(SyntaxFactory.XmlTextLiteral(summaryLine))));
                 }
 
-                xmlSummaryLines.Add(SyntaxFactory
-                    .XmlText(SyntaxFactory.TokenList(xmlIndentedNewLine)));
+                xmlSummaryLines.Add(newLineXmlNode);
             }
 
             // Declare the summary XML element
-            return SyntaxFactory.XmlSummaryElement(xmlSummaryLines.ToArray());
+            return SyntaxFactory.XmlSummaryElement(Para(newLineXmlNode, xmlSummaryLines.ToArray()));
         }
 
         /// <summary>
@@ -81,9 +88,9 @@ namespace DotnetDocument.Syntax
         /// </summary>
         /// <param name="description">The description</param>
         /// <returns>The xml element syntax</returns>
-        public static XmlElementSyntax Returns(string description) => SyntaxFactory
-            .XmlReturnsElement(SyntaxFactory
-                .XmlText(description));
+        public static XmlElementSyntax Returns(string description, XmlTextSyntax newLineXmlNode) => SyntaxFactory
+            .XmlReturnsElement(Para(newLineXmlNode,SyntaxFactory
+                .XmlText(description)));
 
         /// <summary>
         /// Exceptions the exception
@@ -91,10 +98,10 @@ namespace DotnetDocument.Syntax
         /// <param name="exception">The exception</param>
         /// <param name="description">The description</param>
         /// <returns>The xml element syntax</returns>
-        public static XmlElementSyntax Exception(string exception, string description) => SyntaxFactory
+        public static XmlElementSyntax Exception(string exception, string description, XmlTextSyntax newLineXmlNode) => SyntaxFactory
             .XmlExceptionElement(SyntaxFactory
-                .TypeCref(SyntaxFactory.ParseTypeName(exception)), SyntaxFactory
-                .XmlText(description));
+                .TypeCref(SyntaxFactory.ParseTypeName(exception)), Para(newLineXmlNode, SyntaxFactory
+                .XmlText(description)));
 
         /// <summary>
         /// Sees the type
@@ -122,9 +129,9 @@ namespace DotnetDocument.Syntax
         /// <param name="name">The name</param>
         /// <param name="description">The description</param>
         /// <returns>The xml element syntax</returns>
-        public static XmlElementSyntax Param(string name, string description) => SyntaxFactory
-            .XmlParamElement(name, SyntaxFactory
-                .XmlText(description));
+        public static XmlElementSyntax Param(string name, string description, XmlTextSyntax newLineXmlNode) => SyntaxFactory
+            .XmlParamElement(name, Para(newLineXmlNode, SyntaxFactory
+                .XmlText(description)));
 
         /// <summary>
         /// Types the param using the specified type
@@ -132,7 +139,7 @@ namespace DotnetDocument.Syntax
         /// <param name="type">The type</param>
         /// <param name="description">The description</param>
         /// <returns>The xml element syntax</returns>
-        public static XmlElementSyntax TypeParam(string type, string description)
+        public static XmlElementSyntax TypeParam(string type, string description, XmlTextSyntax newLineXmlNode)
         {
             // Declare type params
             var attributeList = SyntaxFactory.List<XmlAttributeSyntax>()
@@ -146,13 +153,11 @@ namespace DotnetDocument.Syntax
                 .WithAttributes(attributeList);
 
             var descriptionXml = new SyntaxList<XmlNodeSyntax>(SyntaxFactory.XmlText(description));
-
             var endTag = SyntaxFactory.XmlElementEndTag(SyntaxFactory
                 .XmlName("typeparam"));
 
             // Declare type param
-            return SyntaxFactory
-                .XmlElement(startTag, descriptionXml, endTag);
+            return SyntaxFactory.XmlElement(startTag, new SyntaxList<XmlNodeSyntax>(Para(newLineXmlNode, descriptionXml.ToArray())), endTag);
         }
 
         /// <summary>

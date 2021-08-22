@@ -244,31 +244,31 @@ namespace DotnetDocument.Syntax
                 .XmlText(xmlNewLine);
 
             // Build the summary element
-            var summaryXmlElement = DocumentationFactory.Summary(_summaryLines, xmlNewLine, false);
+            var summaryXmlElement = DocumentationFactory.Summary(_summaryLines, newLineXmlNode, false);
 
             // Build the see also element
             var seeAlsoElements = _seeAlso.Select(DocumentationFactory.SeeAlso).ToList();
 
             // Build the type parameters elements
             var typeParamElements = _typeParamList.Select(t =>
-                    DocumentationFactory.TypeParam(t.name, t.description))
+                    DocumentationFactory.TypeParam(t.name, t.description, newLineXmlNode))
                 .ToList();
 
             // Build the parameters elements
             var paramElements = _paramList.Select(p =>
-                    DocumentationFactory.Param(p.name, p.description))
+                    DocumentationFactory.Param(p.name, p.description, newLineXmlNode))
                 .ToList();
 
             // Build the exceptions elements
             var exceptionsElements = _exceptions.Select(e =>
-                    DocumentationFactory.Exception(e.exception, e.description))
+                    DocumentationFactory.Exception(e.exception, e.description, newLineXmlNode))
                 .ToList();
 
             XmlElementSyntax? returnsXmlElement = null;
 
             if (_hasReturns)
                 // Declare the returns XML element
-                returnsXmlElement = DocumentationFactory.Returns(_returnsDescription ?? string.Empty);
+                returnsXmlElement = DocumentationFactory.Returns(_returnsDescription ?? string.Empty, newLineXmlNode);
 
             // Build the documentation trivia syntax for the entire doc
             var docCommentTriviaSyntax = DocumentationFactory.XmlDocument(newLineXmlNode,
