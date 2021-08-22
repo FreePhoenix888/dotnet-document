@@ -48,7 +48,7 @@ dotnet document apply ./src/solution.sln -c PATH_TO_CONFIG
 # Documents all *.cs files in the specified project
 dotnet document apply ./src/folder/project.csproj -c PATH_TO_CONFIG
 ```
-`PATH_TO_CONFIG` - a path to a config file from 4th installation step. Example `/user/dotnet-tool-config.yml`
+`PATH_TO_CONFIG` - a path to a config file from 4th installation step. Example `/user/dotnet-document-config.yml`
 
 ## Acknowledgments
 * [Humanizer](https://github.com/Humanizr/Humanizer) - Used for humanizing member names
