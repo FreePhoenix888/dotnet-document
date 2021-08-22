@@ -18,76 +18,37 @@ Thanks to `Microsoft.CodeAnalysis.CSharp` this tool is able to identify undocume
 |<img src="art/without-comment.png"/>|<img src="art/with-comment.png"/>|
 
 ## Installation
-The tool can be installed globally via Nuget by running 
 
-```sh
-dotnet tool install --global dotnet-document --version 0.1.4-alpha
-```
-> 👉 When installing pre releases the version has to be explicitly specified
+1. Clone this repository
+2. Pack projects
+    ```shell
+   dotnet pack 
+   ```
+3. Install tool
+    ```shell
+    dotnet tool install --global --add-source solution_root/src/DotnetDocument.Tools/nupkg dotnet-document
+    ```
+4. Install [config](https://github.com/linksplatform/Settings/blob/main/dotnet-document-config.yaml)
 
-## How to run
+## How to use
 
-### Apply doc
-
-To run the tool invoke `dotnet document apply`
-
-```sh
+```python
 # Documents all *.cs files in the current dir and all sub dirs 
-dotnet document apply
+dotnet document apply -c PATH_TO_CONFIG
 
 # Documents the specified .cs file
-dotnet document apply ./src/folder/MyClass.cs
+dotnet document apply ./src/folder/MyClass.cs -c PATH_TO_CONFIG
 
 # Documents all *.cs files in the specified dir and all sub dirs 
-dotnet document apply ./src/folder/
+dotnet document apply ./src/folder/ -c PATH_TO_CONFIG
 
 # Documents all *.cs files in the specified solution
-dotnet document apply ./src/solution.sln
+dotnet document apply ./src/solution.sln -c PATH_TO_CONFIG
 
 # Documents all *.cs files in the specified project
-dotnet document apply ./src/folder/project.csproj
+dotnet document apply ./src/folder/project.csproj -c PATH_TO_CONFIG
 ```
-
-### Dry run
-To test the command without saving changes on disk a dry run option is available.
-
-In case of undocumented members a non-zero exit code is returned so that it is possible to warn about it  during CI.
-```sh
-dotnet document apply --dry-run
-```
-## Configuration
-
-The tool can be configured so that the generated XML documentation meets  the project guidelines.
-
-### Default configuration
-
-The default configuration is used when no config file specified.
-It can be viewed by invoking 
-```sh
-dotnet document config --default
-```
-
-### Customizing configuration
-
-To customize the configuration, simply save the default one somewhere and use your preferred editor to update it.
-
-```sh
-dotnet document config --default > ~/my-dotnet-document.yaml
-```
-
-Custom configuration path can be provided either by setting a `DOTNET_DOCUMENT_CONFIG_FILE` env variable or by passing the `-c` argument when calling the `apply` command. The latter overrides the first.
-
-```sh
-dotnet document apply \
-  -c ~/my-dotnet-document.yaml \
-  ./src/folder/
-```
-To double check which configuration is being used, invoke
-```sh
-dotnet document config
-```
-
-> 👉 Folder based configuration discovery is not yet supported
+`PATH_TO_CONFIG` - a path to a config file from 4th installation step. Example `/user/dotnet-tool-config.yml`
 
 ## Acknowledgments
 * [Humanizer](https://github.com/Humanizr/Humanizer) - Used for humanizing member names
